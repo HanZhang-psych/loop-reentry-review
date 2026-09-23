@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Live config (may hold local paths / active-search selector)
+config.yaml
+
+# OS / editor
+.DS_Store
+.Rhistory
+.Rproj.user/
+
+# Record-level search data is intentionally not tracked (third-party abstracts)
+data/

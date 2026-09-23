@@ -1,0 +1,17 @@
+# Core data handling
+pandas>=2.0
+
+# Export parsing
+rispy>=0.9          # RIS (.ris) files
+bibtexparser>=1.4   # BibTeX (.bib) files
+
+# Deduplication
+rapidfuzz>=3.0      # fast fuzzy string matching
+
+# Enrichment + API
+requests>=2.31      # OpenAlex / Crossref HTTP calls
+anthropic>=0.40     # Anthropic Batch API client
+
+# Config + progress
+pyyaml>=6.0
+tqdm>=4.66

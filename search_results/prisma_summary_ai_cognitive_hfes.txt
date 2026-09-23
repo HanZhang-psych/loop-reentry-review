@@ -1,0 +1,54 @@
+PRISMA FLOW SUMMARY
+========================================
+Identification:
+  sage                     10
+  sage_1                   10
+  sage_10                  10
+  sage_11                  10
+  sage_12                  10
+  sage_13                  10
+  sage_14                  10
+  sage_15                  10
+  sage_16                  10
+  sage_17                  10
+  sage_18                  10
+  sage_19                  10
+  sage_2                   10
+  sage_20                  10
+  sage_21                  10
+  sage_22                  10
+  sage_23                  10
+  sage_3                   10
+  sage_4                   10
+  sage_5                   10
+  sage_6                   10
+  sage_7                   10
+  sage_8                   10
+  sage_9                   10
+  Records identified:    240
+  Duplicates removed:    3
+  Unique records:        237
+  Abstracts backfilled:  225
+
+Screening:
+  Model:                 claude-sonnet-4-6
+  Self-consistency samples: 5
+  Records screened:      225
+  Not screened (no abstract): 12
+  Eligible for full text (consistent includes): 1
+  Excluded:              224
+  Flagged for human review:    63
+    leaning include, not consistent (tentative, held back): 0
+    leaning exclude, not consistent: 0
+    audit-sampled excludes: 50
+
+Exclusions by reason:
+  No out-of-the-loop automation            112
+  No standalone cognitive task             47
+  No objective performance measure         38
+  No human participants                    24
+  Insufficient information                 1
+  No loop re-entry                         1
+  Experimental manipulation study          1
+
+NOTE: the 50 audit-sampled excludes are randomly drawn from the auto-excluded pile. Inspect them; the share you find wrongly excluded estimates this run's false-exclude rate.

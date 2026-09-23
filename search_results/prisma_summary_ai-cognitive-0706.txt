@@ -1,0 +1,43 @@
+PRISMA FLOW SUMMARY
+========================================
+Identification:
+  acm_2010-2016            868
+  acm_2016-2020            951
+  acm_2020-2022            730
+  acm_2022-2024            827
+  acm_2024-2025            823
+  acm_april2026-july2026   925
+  acm_feb2025-sep2025      816
+  acm_oct2025-march2026    687
+  ieee                     693
+  psycinfo                 157
+  pubmed                   149
+  scopus                   775
+  wos                      560
+  Records identified:    8961
+  Duplicates removed:    835
+  Previously screened removed: 205  (matched against 843 prior records)
+  Unique records:        7921
+  Abstracts backfilled:  29
+
+Screening:
+  Mode:                  claude-sonnet-4-6 x 5 samples (self-consistency)
+  Records screened:      7911
+  Not screened (no abstract): 10
+  Eligible for full text (consistent includes): 1
+  Excluded:              7907
+  Flagged for human review:    77
+    leaning include, not consistent (tentative, held back): 3
+    leaning exclude, not consistent: 0
+    audit-sampled excludes: 50
+
+Exclusions by reason:
+  No out-of-the-loop automation            4658
+  No human participants                    2730
+  No standalone cognitive task             281
+  No objective performance measure         204
+  No loop re-entry                         16
+  Insufficient information                 14
+  Experimental manipulation study          4
+
+NOTE: the 50 audit-sampled excludes are randomly drawn from the auto-excluded pile. Inspect them; the share you find wrongly excluded estimates this run's false-exclude rate.

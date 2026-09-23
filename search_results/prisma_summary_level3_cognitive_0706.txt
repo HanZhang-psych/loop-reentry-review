@@ -1,0 +1,35 @@
+PRISMA FLOW SUMMARY
+========================================
+Identification:
+  acm_lvl3                 460
+  ieee_lvl3                63
+  psycinfo_lvl3            83
+  pubmed_lvl3              58
+  scopus_lvl3              289
+  wos_lvl3                 283
+  Records identified:    1236
+  Duplicates removed:    393
+  Unique records:        843
+  Abstracts backfilled:  1
+
+Screening:
+  Mode:                  claude-sonnet-4-6 x 5 samples (self-consistency)
+  Records screened:      843
+  Not screened (no abstract): 0
+  Eligible for full text (consistent includes): 6
+  Excluded:              837
+  Flagged for human review:    52
+    leaning include, not consistent (tentative, held back): 0
+    leaning exclude, not consistent: 0
+    audit-sampled excludes: 50
+
+Exclusions by reason:
+  No standalone cognitive task             414
+  No out-of-the-loop automation            176
+  No human participants                    103
+  No objective performance measure         96
+  Experimental manipulation study          37
+  No loop re-entry                         9
+  Insufficient information                 2
+
+NOTE: the 50 audit-sampled excludes are randomly drawn from the auto-excluded pile. Inspect them; the share you find wrongly excluded estimates this run's false-exclude rate.

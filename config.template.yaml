@@ -1,0 +1,143 @@
+# ============================================================================
+# PER-SEARCH config TEMPLATE.
+#
+# This file is the template used to seed a new search's config. Each search has
+# its OWN complete copy at data/searches/<name>/config.yaml — edit THAT file to
+# change a search's criteria, thresholds, model, or prior-screening. Creating a
+# search (`python run.py ingest --search <name>`) copies this template in.
+#
+# The active search is selected in the ROOT config.yaml (paths.active_search) or
+# per command with --search. inputs/, work/, outputs/, prior_screened/, and
+# archives/ are derived from the search folder; do not set them here.
+# ============================================================================
+
+paths:
+  criteria_file: "prompts/criteria-loop-reentry-cognitive.md"  # the editable screening criteria (decision rules)
+
+# ----------------------------------------------------------------------------
+# INGEST: how to read each export. Files are auto-detected by extension
+# (.ris .bib .csv .txt). The source database is taken from the file NAME stem,
+# e.g. inputs/scopus.csv -> source_db = "scopus".
+# Recommended exports (all carry abstracts):
+#   web of science -> RIS, "Full Record"        -> wos.ris
+#   scopus         -> CSV, tick "Abstract & keywords"  -> scopus.csv
+#   ieee xplore    -> RIS, "Citation & Abstract" -> ieee.ris
+#   psycinfo       -> RIS, "Complete/Detailed record"  -> psycinfo.ris
+#   acm            -> BibTeX (abstracts often missing; backfilled later) -> acm.bib
+# ----------------------------------------------------------------------------
+ingest:
+  # CSV column mapping. The parser tries these candidate names (case-insensitive)
+  # for each field. Add your own if a column is named differently.
+  csv_field_candidates:
+    doi:      ["DOI", "DI", "doi"]
+    title:    ["Title", "Article Title", "TI", "Document Title", "title"]
+    authors:  ["Authors", "Author", "AU", "Author Full Names", "authors"]
+    year:     ["Year", "Publication Year", "PY", "Date", "year"]
+    abstract: ["Abstract", "AB", "abstract"]
+
+# ----------------------------------------------------------------------------
+# DEDUP: DOI exact-match first, then fuzzy title+year+author for the remainder.
+# ----------------------------------------------------------------------------
+dedup:
+  fuzzy_title_threshold: 90     # >= this similarity (0-100) = auto-merge
+  fuzzy_review_band: 83         # [review_band, threshold) = flag for HUMAN review
+  year_window: 1                # only compare records within +/- this many years
+
+# ----------------------------------------------------------------------------
+# PRIOR SCREENING: drop records you already screened in an earlier, overlapping
+# search so they are never screened again. Runs right after DEDUP (which only
+# collapses copies WITHIN this run). Matching reuses the DEDUP thresholds above
+# (DOI exact, then fuzzy title+year+author). Removed records are logged to
+# outputs/prior_screened_removed.csv with a `restore` column, so a false match
+# is added back at the same human checkpoint as the dedup review.
+#
+# By default this reads THIS search's own prior_screened/ folder — drop an
+# earlier search's outputs/screening_results_full.csv (or eligible_for_fulltext.csv)
+# in there. Any current record matching one of those rows is removed, regardless
+# of its prior include/exclude decision (the prior decision is still recorded in
+# the audit file for reference). Set `files` explicitly (globs allowed) to point
+# elsewhere. Leave enabled: false to disable.
+# ----------------------------------------------------------------------------
+prior_screened:
+  enabled: false
+  # files:                          # defaults to this search's prior_screened/*.csv
+  #   - "data/searches/initial/outputs/screening_results_full.csv"
+
+# ----------------------------------------------------------------------------
+# ENRICH: backfill missing abstracts via OpenAlex (primary) + Crossref (fallback).
+# A valid mailto puts you in the APIs' "polite pool" (faster, more reliable).
+# ----------------------------------------------------------------------------
+enrich:
+  mailto: "stefsch@umich.edu"   # <-- CHANGE THIS
+  request_delay_sec: 0.2           # politeness delay between API calls
+  timeout_sec: 20
+  # cache_file: defaults to this search's work/abstract_cache.json (avoids
+  # re-fetching on reruns). Set a path here to override / share across searches.
+
+# ----------------------------------------------------------------------------
+# SCREEN: Anthropic Batch API settings.
+# Requires the environment variable ANTHROPIC_API_KEY to be set.
+# ----------------------------------------------------------------------------
+screen:
+  # The ONE model used for screening. Pick by your accuracy/cost trade-off:
+  #   "claude-opus-4-8"   -> strongest, ~5x the Sonnet price
+  #   "claude-sonnet-4-6" -> cheaper, fast; good default for large corpora
+  model: "claude-sonnet-4-6"
+  max_tokens: 256
+  batch_chunk_size: 3000        # <= 10000 per batch; smaller surfaces errors sooner
+  use_prompt_caching: true      # caches the criteria block across calls (cheaper)
+
+  # ---- SELF-CONSISTENCY: screen each record N times on the SAME model --------
+  # Confidence is EMPIRICAL — it comes from how much the N samples agree, not
+  # from the model's own say-so (which is poorly calibrated). Vary temperature
+  # across samples so the spread reflects genuine ambiguity. Any record whose
+  # samples are not consistent is routed to human review (see below).
+  self_consistency:
+    samples: 5
+    # One temperature per sample. If this list is shorter than `samples` it is
+    # recycled; if longer, the extra entries are ignored. Include 0.0 for a
+    # stable anchor and higher values to probe ambiguity.
+    temperatures: [0.0, 0.3, 0.5, 0.7, 1.0]
+    # Auto-decide a record only when sample agreement is >= this fraction.
+    # 1.0 = require unanimity (every sample agrees); anything less -> human
+    # review. Relax toward 0.8 if the unanimity review pile is too large.
+    review_below_agreement: 1.0
+    # Minimum number of samples that must return a parseable verdict for the
+    # record to be auto-decided at all. Leave null for "a majority of samples".
+    min_valid_samples: null
+
+  # How to handle records whose abstract is still missing after enrichment.
+  # "review"  -> do NOT send to the model; route to human review (recommended)
+  # "exclude" -> auto-exclude as "Insufficient information"
+  # "screen"  -> send title-only to the model (lower reliability)
+  missing_abstract_policy: "review"
+
+  # What to do when the model's chosen exclusion reason is "Insufficient
+  # information" (a required criterion was missing/unclear in the abstract).
+  #   "review"  -> never auto-drop; route every such exclude to human review
+  #                (recommended — uncertainty is the dangerous direction)
+  #   "include" -> treat as include-for-fulltext (most recall-conservative;
+  #                resolves the uncertainty at full-text instead)
+  insufficient_info_policy: "review"
+
+  # ---- AUDIT SAMPLE: ongoing check on the auto-EXCLUDED pile ------------------
+  # Even consistent excludes are spot-checked. A seeded random sample of records
+  # the pipeline auto-excluded (without flagging) is added to
+  # needs_human_review.csv so you can estimate the real-world exclusion-error
+  # rate on THIS corpus, not just the pilot. Set sample_size: 0 to disable.
+  audit_excludes:
+    sample_size: 50
+    seed: 20260628        # fixed seed -> the same audit sample on every re-run
+
+# ----------------------------------------------------------------------------
+# ARCHIVE: after each completed screen run, snapshot the whole run into one
+# timestamped folder (inputs + intermediates + outputs + the criteria/config
+# used + a manifest). This is your record-keeping / reproducibility trail.
+# Disable per-run with `python run.py screen --no-archive`, or snapshot the
+# current state any time with `python run.py archive`.
+# ----------------------------------------------------------------------------
+archive:
+  enabled: true
+  # dir: defaults to this search's own archives/ folder, one subfolder per run:
+  # data/searches/<search>/archives/run_<timestamp>/. Set a path here to override
+  # (e.g. a single shared archive across searches).

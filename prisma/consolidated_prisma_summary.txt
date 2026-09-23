@@ -1,0 +1,80 @@
+CONSOLIDATED PRISMA FLOW SUMMARY  —  cognitive searches
+================================================================
+Generated: 2026-09-21 (full-text stage resolved)
+Runs consolidated (fully merged, all duplicates removed once):
+  - ai-cognitive-0706        (main databases)
+  - ai_cognitive_hfes        (HFES/SAGE proceedings)
+  - level3_cognitive_0706    (main databases)
+  - level3_cognitive_hfes    (HFES/SAGE proceedings)
+
+Identification:
+  ai-cognitive-0706          8961
+  ai_cognitive_hfes          240
+  level3_cognitive_0706      1236
+  level3_cognitive_hfes      129
+  Records identified (all databases):   10566
+
+Duplicates / overlap removed before screening:
+  Within-run duplicates:                1233
+  Prior-screened overlap removed:       205   (ai-cognitive-0706 matched to level3_cognitive_0706)
+  Additional cross-run duplicates:      62    (removed in this consolidation)
+  Total records removed:                1500
+  Unique records:                       9066
+
+Screening (title/abstract):
+  Mode:  claude-sonnet-4-6 x 5 samples (self-consistency), LLM-assisted with human verification
+  Records screened:                     9066
+  Excluded by automated screening:      9013
+    (a random audit subset of 198 was human-spot-checked to estimate the false-exclude rate)
+  Model uncertain, held for human review (NOT counted as excluded):  42
+    Insufficient information:            16
+    No retrievable abstract:            25
+    Inconsistent samples:               1
+  Model-eligible at abstract screening: 11   (8 consistent + 3 tentative)
+
+Exclusions by reason (excluded set only, one reason per record):
+  No out-of-the-loop automation            4957
+  No human participants                    2859
+  No standalone cognitive task             776
+  No objective performance measure         350
+  Experimental manipulation study          45
+  No loop re-entry                         26
+
+Full-text eligibility:
+  Full-text screened = all model-eligible + all held-for-review (non-audit).
+  Reports assessed for eligibility at full text:   55
+    from searches:                        53   (11 model-eligible + 42 held for review)
+    via Google Scholar (other methods):   2
+  Reports excluded at full text:          42
+    from searches:                        42   (2 model-eligible + 40 held-for-review)
+    via Google Scholar:                   0
+  The 2 model-eligible excluded at full text:
+    - How Multi-Tasking Ability Impacts Performance, Workload, Situation Awareness, Stress and
+      Trust with Simulated Imperfect Automation (2026) - 10.1177/00187208261431968 - pubmed-00101 - tentative (1T/0F)
+    - Jipp - Reaction Times to Consecutive Automation Failures (2016) - 10.1177/0018720816662374 - wos-00184 - consistent (5T/0F)
+
+Included (final, after human review + full text):
+  Studies included:                     13
+    From database/proceedings searches: 11
+      - model-eligible retained:        9   (Pak 2017; Schnebelen 2025; Weng 2024;
+                                             Peng 2022; Dou 2025; Koerber 2015; Peng 2023;
+                                             McGarry 2025; Chen & Barnes 2012 [Experiment 2])
+      - rescued from held-for-review:   2   (Attentional Control 2020; Chen RoboLeader 2010,
+                                             both flagged "insufficient information — verify before dropping")
+    Via Google Scholar (other methods): 2   (McCarty 2016; He & Li 2025)
+  Note: Chen & Barnes (2012) is included for Experiment 2 only (a separate sample, N = 40).
+    Its Experiment 1 is the same dataset as the included Chen, Barnes & Qu (2010) IEEE
+    RoboLeader paper, which is retained as the record for Experiment 1 (so Experiment 1 is
+    counted once).
+
+Notes:
+  - Records the model flagged uncertain (insufficient information, no abstract, inconsistent
+    samples) are held for human review, NOT excluded. Only the auto-excluded pile counts as
+    excluded; the 198 audit-sampled records are a spot-check drawn from that pile.
+  - The 11 model-eligible at abstract screening and the 11 finally included are DIFFERENT sets
+    (7 overlap): four model-eligible records were dropped at full text, two held-for-review
+    records were rescued, and two papers were added via Google Scholar.
+  - McCarty 2016 appears only in the ai_selfreport run (excluded there); He & Li 2025 is in no
+    screening corpus. Both were found by hand, so they enter as "other methods," not database hits.
+  - Two counts are needed to complete the full-text stage: how many full texts were assessed and
+    how many were excluded (with reasons), and how many records the Google Scholar search returned.
