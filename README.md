@@ -4,8 +4,7 @@ Materials for the scoping review *Who can re-enter the loop? A scoping review on
 cognitive abilities and loop re-entry in human–AI interaction.*
 
 This repository documents how the review's literature search and screening were
-run, and it reproduces the PRISMA 2020 flow diagram. It covers the **cognitive**
-strand of the review — the four searches that fed the included studies.
+run, and it reproduces the PRISMA 2020 flow diagram. 
 
 ## What the review did
 
@@ -45,8 +44,7 @@ screening stages.
 ## Re-running the screening pipeline
 
 The pipeline is included so the screening procedure is inspectable and
-repeatable, but the record-level search exports are **not** distributed here
-(see below). To run screening on your own exported records:
+repeatable. To run screening on your own exported records:
 
     pip install -r requirements.txt
     export ANTHROPIC_API_KEY=...        # required for a live screen
@@ -55,16 +53,6 @@ repeatable, but the record-level search exports are **not** distributed here
 
 The screening logic lives in `prompts/criteria-loop-reentry-cognitive.md`; the
 pipeline adds the structured-output format automatically.
-
-## What is not included, and why
-
-The raw database exports and the record-level screening-decision files contain
-titles and abstracts retrieved from the source databases. To respect database
-terms of use and third-party copyright, those records are not redistributed
-here. This repository includes the search strategy, the screening prompt, the
-aggregate counts at each stage, and the code, which together document the search
-without reproducing the copyrighted records. Included-study PDFs are likewise
-omitted.
 
 ## Citation
 
