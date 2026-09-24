@@ -15,10 +15,10 @@ copyrighted abstracts that were sent to the model are not redistributed.
 - `decision_log.jsonl` — one JSON object per record, with the full detail:
   each of the five samples (`temperature`, `eligible`, `reason`, `rationale`)
   and the aggregated `final` decision.
-- `decision_log.csv` — the same records in flat form, one row each: the five
-  per-temperature verdicts (`elig_t00`…`elig_t10`), vote counts, agreement, and
-  the final decision. Convenient for quick inspection; use the JSONL for the
-  per-sample rationales.
+- `decision_log.csv` — the same records in flat form, one row each: for each
+  temperature, the verdict and the model's rationale (`elig_t00`/`rationale_t00`
+  … `elig_t10`/`rationale_t10`), plus vote counts, agreement, and the final
+  decision. Equivalent to the JSONL; use whichever format is more convenient.
 
 ## Fields
 
