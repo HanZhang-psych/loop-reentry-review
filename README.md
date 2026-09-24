@@ -24,6 +24,7 @@ after de-duplication) and yielded 13 included studies.
                         instructions (prompts/criteria-loop-reentry-cognitive.md).
     search_strings/     The database query strings, by search strand.
     search_results/     Per-strand PRISMA count summaries (record counts only).
+    screening_decisions/ Per-record LLM screening decisions (abstract-free).
     prisma/             Reproducible PRISMA 2020 flow diagram: the R script,
                         the data behind it, the rendered figure, and a
                         text summary of the consolidated flow.
